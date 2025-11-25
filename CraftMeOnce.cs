@@ -1,8 +1,10 @@
-﻿using HarmonyLib;
+﻿using BepInEx;
+using HarmonyLib;
 
 namespace CraftMeOnce
 {
-    public class CraftMeOnce
+    [BepInPlugin(GUID, NAME, VERSION)]
+    public class CraftMeOnce : BaseUnityPlugin
     {
         public const string GUID = "Turbero.CraftMeOnce";
         public const string NAME = "Craft Me Once";
@@ -12,6 +14,7 @@ namespace CraftMeOnce
 
         void Awake()
         {
+            ConfigurationFile.LoadConfig(this);
             harmony.PatchAll();
         }
 

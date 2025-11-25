@@ -1,13 +1,17 @@
 # Craft Me Once
 
-Craft Me Once is a client-mod that will let you know which recipes you have not crafted yet with an exclamation mark in the workstations. 
-This way you will be able to discover recipes that are made of other recipes more easily
+Craft Me Once is a client mod that will let you know which recipes you have not crafted yet with an exclamation mark in the workstations.
+This way you will be able to discover recipes that are made of other recipes easily.
+
+(Note: This is compatible even with mods that can paginate workstation lists, like AAACrafting)
 
 ## Usage instructions
 
-Open your workstations at your ward, then check the recipes list. They will have a yellow "!" if you haven't crafted yet at least once.
+Open any workstation, then check the recipes list. They will have a yellow "!" in the list if you haven't crafted yet at least once.
 
-![]()
+Enable/disable the mod or show debug logs by modifying the .cfg file while inside the game, you don't need to close the game.
+
+![](https://i.imgur.com/sCi8Rul.jpeg)
 
 ## About myself
 
