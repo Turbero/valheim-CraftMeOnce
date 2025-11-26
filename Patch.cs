@@ -18,10 +18,10 @@ namespace CraftMeOnce
                     BtnExclamationPatch.btnExclamation.gameObject.SetActive(false);
                 return;
             }
-            if (BtnExclamationPatch.btnExclamation != null)
-                BtnExclamationPatch.btnExclamation.gameObject.SetActive(true);
-
+            if (BtnExclamationPatch.btnExclamation == null) return;
             if (ConfigurationFile.showExclamation.Value == ConfigurationFile.Toggle.Off) return;
+            
+            BtnExclamationPatch.btnExclamation.gameObject.SetActive(true);
             
             Logger.Log("UpdateCraftingPanelPatch - Postfix");
             Player player = Player.m_localPlayer;
@@ -42,7 +42,7 @@ namespace CraftMeOnce
                     Logger.Log("found itemRecipeKeyValue: "+ translatedText + " - "+ recipeKey);
                     bool known = player.IsKnownMaterial(recipeKey);
                     if (!known)
-                        translatedText.text = "<color=yellow>!</color> " + Localization.instance.Localize(translatedText.text);
+                        translatedText.text = "<color=yellow>" + ConfigurationFile.characterForNotcraftedItems.Value + "</color> " + Localization.instance.Localize(translatedText.text);
                     else
                         translatedText.text = Localization.instance.Localize(translatedText.text);
                 }
@@ -126,7 +126,6 @@ namespace CraftMeOnce
                 buttonTextRect.anchoredPosition = ConfigurationFile.btnPosition.Value;
                 buttonTextRect.sizeDelta = ConfigurationFile.btnSize.Value;
                 buttonText = btnExclamationGo.GetComponentInChildren<TextMeshProUGUI>();
-                buttonText.text = "!";
                 buttonText.font = GameManager.getFontAsset("Valheim-AveriaSerifLibre");
                 buttonText.fontStyle = FontStyles.Normal;
                 buttonText.alignment = TextAlignmentOptions.Center;
@@ -142,6 +141,7 @@ namespace CraftMeOnce
                     //The config reload will call the setupCrafting after the previous line
                 });
             }
+            buttonText.text = ConfigurationFile.characterForNotcraftedItems.Value;
             buttonText.color = ConfigurationFile.showExclamation.Value == ConfigurationFile.Toggle.On ? Color.yellow : Color.gray;
         }
     }
