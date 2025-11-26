@@ -1,6 +1,6 @@
 {
   "name": "CraftMeOnce",
-  "version_number": "1.0.0",
+  "version_number": "1.0.1",
   "website_url": "https://github.com/Turbero/valheim-CraftMeOnce",
   "description": "Client mod to know with an !-mark in the workstations which recipes you have not crafted yet, so you can unlock recipes made of other recipes easily. Or craft everything in the game for 100% completion if you wish!",
   "dependencies": [
