@@ -11,7 +11,7 @@ Open any workstation, then check the recipes list. They will have a yellow "!" i
 
 Enable/disable the mod or show debug logs by modifying the .cfg file while inside the game, you don't need to close the game.
 
-![](https://i.imgur.com/sCi8Rul.jpeg)
+![](https://i.imgur.com/D23mRzI.jpeg)
 
 ## About myself
 
