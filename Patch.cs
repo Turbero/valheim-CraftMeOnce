@@ -7,59 +7,27 @@ using UnityEngine.UI;
 
 namespace CraftMeOnce
 {
-    public static class Caching
-    {
-        public static readonly Dictionary<string, string> itemDropTranslatedKeys = new Dictionary<string, string>();
-
-        [HarmonyPatch(typeof(Player), "OnSpawned")]
-        public static class Player_OnSpawned
-        {
-            static void Postfix(bool spawnValkyrie)
-            {
-                Logger.Log($"Player_OnSpawned");
-                AddItemDrops();
-            }
-        }
-
-        public static void AddItemDrops()
-        {
-            itemDropTranslatedKeys.Clear();
-            foreach (Recipe recipe in Resources.FindObjectsOfTypeAll<Recipe>())
-            {
-                if (recipe.m_item != null && 
-                    recipe.m_item.m_itemData != null &&
-                    recipe.m_item.m_itemData.m_shared != null)
-                {
-                    string translated = Localization.instance.Localize(recipe.m_item.m_itemData.m_shared.m_name);
-                    if (!itemDropTranslatedKeys.ContainsKey(translated))
-                        itemDropTranslatedKeys.Add(translated, recipe.m_item.m_itemData.m_shared.m_name);
-                }
-            }
-        }
-    }
-    
-    [HarmonyPatch(typeof(Localization), "SetLanguage")]
-    public class Localization_SetLanguage_Patch
-    {
-        static void Postfix(string language)
-        {
-            Logger.Log($"Language changed to: {language}");
-            Caching.AddItemDrops();
-        }
-    }
-
     [HarmonyPatch(typeof(InventoryGui), "UpdateRecipeList")]
     public static class UpdateCraftingPanelPatch
     {
         static void Postfix(InventoryGui __instance, List<Recipe> recipes)
         {
-            if (ConfigurationFile.modEnabled.Value == ConfigurationFile.Toggle.Off) return;
+            if (ConfigurationFile.modEnabled.Value == ConfigurationFile.Toggle.Off)
+            {
+                if (BtnExclamationPatch.btnExclamation != null)
+                    BtnExclamationPatch.btnExclamation.gameObject.SetActive(false);
+                return;
+            }
+            if (BtnExclamationPatch.btnExclamation != null)
+                BtnExclamationPatch.btnExclamation.gameObject.SetActive(true);
+
+            if (ConfigurationFile.showExclamation.Value == ConfigurationFile.Toggle.Off) return;
             
             Logger.Log("UpdateCraftingPanelPatch - Postfix");
             Player player = Player.m_localPlayer;
             if (player == null) return;
                 
-            Transform listRoot = InventoryGui.instance.transform.Find("root/Crafting/RecipeList/Recipes/ListRoot");
+            Transform listRoot = __instance.transform.Find("root/Crafting/RecipeList/Recipes/ListRoot");
             int childrenCount = listRoot.childCount;
 
             for (int i = 0; i < childrenCount; i++)
@@ -87,14 +55,15 @@ namespace CraftMeOnce
             if (found) return true;
             
             //Items that produces more than 1
-            Logger.Log("translated quantity check");
             string translatedWithoutAmount = RemoveAmountSuffix(translatedText.text, " x");
+            Logger.Log("translated quantity check: "+translatedWithoutAmount);
             found = Caching.itemDropTranslatedKeys.TryGetValue(translatedWithoutAmount, out recipeKey);
             if (found) return true;
             
             ///AAACrafting mod compatibility
-            translatedWithoutAmount = CleanItemName(translatedText.text);
-            return Caching.itemDropTranslatedKeys.TryGetValue(translatedWithoutAmount, out recipeKey);
+            string translatedWithoutGarbage = CleanItemName(translatedText.text);
+            Logger.Log("translated other mods check: "+translatedWithoutGarbage);
+            return Caching.itemDropTranslatedKeys.TryGetValue(translatedWithoutGarbage, out recipeKey);
         }
         
         private static string RemoveAmountSuffix(string text, string indicator)
@@ -134,6 +103,46 @@ namespace CraftMeOnce
             // 4. Finally trim possible blank spaces at the beginning and end
             return result.Trim();
         }
+    }
 
+    [HarmonyPatch(typeof(InventoryGui), "SetupCrafting")]
+    public static class BtnExclamationPatch
+    {
+        private static GameObject btnExclamationGo;
+        public static Button btnExclamation;
+        private static TextMeshProUGUI buttonText;
+        
+        static void Postfix(InventoryGui __instance)
+        {
+            if (btnExclamationGo == null || btnExclamation == null || buttonText == null)
+            {
+                Transform copyButton = __instance.m_skillsDialog.transform.Find("SkillsFrame/Closebutton");
+                Transform parent = __instance.m_crafting.transform;
+                btnExclamationGo = Object.Instantiate(copyButton.gameObject, parent);
+                btnExclamationGo.name = "BtnExclamation";
+                btnExclamationGo.transform.SetParent(parent, false);
+                
+                RectTransform buttonTextRect = btnExclamationGo.GetComponent<RectTransform>();
+                buttonTextRect.anchoredPosition = ConfigurationFile.btnPosition.Value;
+                buttonTextRect.sizeDelta = ConfigurationFile.btnSize.Value;
+                buttonText = btnExclamationGo.GetComponentInChildren<TextMeshProUGUI>();
+                buttonText.text = "!";
+                buttonText.font = GameManager.getFontAsset("Valheim-AveriaSerifLibre");
+                buttonText.fontStyle = FontStyles.Normal;
+                buttonText.alignment = TextAlignmentOptions.Center;
+
+                btnExclamation = btnExclamationGo.GetComponent<Button>();
+                btnExclamation.onClick = new Button.ButtonClickedEvent();
+                btnExclamation.onClick.AddListener(() =>
+                {
+                    ConfigurationFile.showExclamation.Value =
+                        ConfigurationFile.showExclamation.Value == ConfigurationFile.Toggle.Off
+                            ? ConfigurationFile.Toggle.On
+                            : ConfigurationFile.Toggle.Off;
+                    //The config reload will call the setupCrafting after the previous line
+                });
+            }
+            buttonText.color = ConfigurationFile.showExclamation.Value == ConfigurationFile.Toggle.On ? Color.yellow : Color.gray;
+        }
     }
 }

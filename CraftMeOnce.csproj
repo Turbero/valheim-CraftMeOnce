@@ -68,8 +68,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Caching.cs" />
     <Compile Include="ConfigurationFile.cs" />
     <Compile Include="CraftMeOnce.cs" />
+    <Compile Include="GameManager.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Patch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
