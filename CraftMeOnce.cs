@@ -8,7 +8,7 @@ namespace CraftMeOnce
     {
         public const string GUID = "Turbero.CraftMeOnce";
         public const string NAME = "Craft Me Once";
-        public const string VERSION = "1.0.1";
+        public const string VERSION = "1.0.2";
 
         private readonly Harmony harmony = new Harmony(GUID);
 
