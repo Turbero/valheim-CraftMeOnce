@@ -16,6 +16,16 @@ namespace CraftMeOnce
             return obj.GetType().GetField(name, bindingAttr)?.GetValue(obj);
         }
         
+        public static object GetPrivateMethod(object obj, string name, BindingFlags bindingAttr = BindingFlags.Instance | BindingFlags.NonPublic, object[] args = null)
+        {
+            return obj.GetType().GetMethod(name, bindingAttr)?.Invoke(obj, args);
+        }
+        
+        public static void CallPrivateMethod(object obj, string name, BindingFlags bindingAttr = BindingFlags.Instance | BindingFlags.NonPublic, object[] args = null)
+        {
+            obj.GetType().GetMethod(name, bindingAttr)?.Invoke(obj, args);
+        }
+        
         public static TMP_FontAsset getFontAsset(String name)
         {
             if (!cachedFonts.ContainsKey(name))
