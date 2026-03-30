@@ -16,6 +16,7 @@ Enable/disable the mod or show debug logs by modifying the .cfg file while insid
 ## Compatibility
 
 * Compatible even with mods that can paginate workstation lists like AAACrafting
+* Compatible with controllers
 
 ## About myself
 

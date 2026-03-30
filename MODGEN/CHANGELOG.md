@@ -1,5 +1,10 @@
 ### CHANGELOG
 
+## 1.0.3
+
+* Added support for controllers
+* Couple of configuration entry names
+
 ## 1.0.2
 
 * Added option to repair all items at once in one click at workstations.
