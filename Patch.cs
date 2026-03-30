@@ -42,7 +42,7 @@ namespace CraftMeOnce
                     Logger.Log("found itemRecipeKeyValue: "+ translatedText + " - "+ recipeKey);
                     bool known = player.IsKnownMaterial(recipeKey);
                     if (!known)
-                        translatedText.text = "<color=yellow>" + ConfigurationFile.characterForNotcraftedItems.Value + "</color> " + Localization.instance.Localize(translatedText.text);
+                        translatedText.text = "<color=yellow>" + ConfigurationFile.characterForNotCraftedItems.Value + "</color> " + Localization.instance.Localize(translatedText.text);
                     else
                         translatedText.text = Localization.instance.Localize(translatedText.text);
                 }
@@ -121,6 +121,7 @@ namespace CraftMeOnce
                 btnExclamationGo = Object.Instantiate(copyButton.gameObject, parent);
                 btnExclamationGo.name = "BtnExclamation";
                 btnExclamationGo.transform.SetParent(parent, false);
+                GameManager.BindGamePad(btnExclamationGo.transform, ConfigurationFile.btnGamepadKey.Value, __instance);
                 
                 RectTransform buttonTextRect = btnExclamationGo.GetComponent<RectTransform>();
                 buttonTextRect.anchoredPosition = ConfigurationFile.btnPosition.Value;
@@ -141,7 +142,7 @@ namespace CraftMeOnce
                     //The config reload will call the setupCrafting after the previous line
                 });
             }
-            buttonText.text = ConfigurationFile.characterForNotcraftedItems.Value;
+            buttonText.text = ConfigurationFile.characterForNotCraftedItems.Value;
             buttonText.color = ConfigurationFile.showExclamation.Value == ConfigurationFile.Toggle.On ? Color.yellow : Color.gray;
         }
     }
