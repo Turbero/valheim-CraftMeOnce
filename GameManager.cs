@@ -31,7 +31,7 @@ namespace CraftMeOnce
             obj.GetType().GetMethod(name, bindingAttr)?.Invoke(obj, args);
         }
         
-        public static void BindGamePad(Transform buttonGo, KeyCode gamepadKeyCode, InventoryGui inventoryGui = null)
+        public static void BindGamePad(Transform buttonGo, KeyCode gamepadKeyCode, Vector2 hintAnchoredPosition, InventoryGui inventoryGui = null)
         {
             UIGamePad uiGamePad = null;
             if (buttonGo.TryGetComponent(out uiGamePad))
@@ -46,6 +46,9 @@ namespace CraftMeOnce
                     ZInput.Initialize();
                     uiGamePad.m_hint.GetComponentInChildren<TextMeshProUGUI>(true).text = ZInput.instance?.GetBoundKeyString(gamepadKey, true);
                 }
+                RectTransform hintRectTransform = uiGamePad.m_hint.GetComponent<RectTransform>();
+                if (hintAnchoredPosition != Vector2.zero || hintRectTransform.anchoredPosition != Vector2.zero)
+                    uiGamePad.m_hint.GetComponent<RectTransform>().anchoredPosition = hintAnchoredPosition;
                 uiGamePad.m_zinputKey = gamepadKey;
                 uiGamePad.m_keyCode = gamepadKeyCode;
                 if (inventoryGui != null && inventoryGui.m_crafting.TryGetComponent(out UIGroupHandler group))

@@ -121,7 +121,7 @@ namespace CraftMeOnce
                 btnExclamationGo = Object.Instantiate(copyButton.gameObject, parent);
                 btnExclamationGo.name = "BtnExclamation";
                 btnExclamationGo.transform.SetParent(parent, false);
-                GameManager.BindGamePad(btnExclamationGo.transform, ConfigurationFile.btnGamepadKey.Value, __instance);
+                GameManager.BindGamePad(btnExclamationGo.transform, ConfigurationFile.btnGamepadKey.Value, new Vector2(-30, 0), __instance);
                 
                 RectTransform buttonTextRect = btnExclamationGo.GetComponent<RectTransform>();
                 buttonTextRect.anchoredPosition = ConfigurationFile.btnPosition.Value;

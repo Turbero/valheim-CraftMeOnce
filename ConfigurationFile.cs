@@ -81,7 +81,7 @@ namespace CraftMeOnce
             if (BtnExclamationPatch.btnExclamation != null)
             {
                 BtnExclamationPatch.btnExclamation.gameObject.SetActive(modEnabled.Value == Toggle.On);
-                GameManager.BindGamePad(BtnExclamationPatch.btnExclamation.gameObject.transform, btnGamepadKey.Value, InventoryGui.instance);
+                GameManager.BindGamePad(BtnExclamationPatch.btnExclamation.gameObject.transform, btnGamepadKey.Value, new Vector2(-30, 0), InventoryGui.instance);
             }
 
             if (InventoryGui.IsVisible())
