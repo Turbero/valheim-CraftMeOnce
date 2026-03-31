@@ -1,5 +1,9 @@
 ### CHANGELOG
 
+## 1.0.4
+
+* Little adjustment of the gamepad hint position of the button to avoid hiding other hints
+
 ## 1.0.3
 
 * Added support for controllers
