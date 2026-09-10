@@ -1,5 +1,9 @@
 ### CHANGELOG
 
+## 1.0.5
+
+* Recompiled for compatibility with 1.0
+
 ## 1.0.4
 
 * Little adjustment of the gamepad hint position of the button to avoid hiding other hints
