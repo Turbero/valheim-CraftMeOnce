@@ -12,6 +12,7 @@ namespace CraftMeOnce
     {
         static void Postfix(InventoryGui __instance, List<Recipe> recipes)
         {
+            Logger.Log("UpdateCraftingPanelPatch - Postfix");
             if (ConfigurationFile.modEnabled.Value == ConfigurationFile.Toggle.Off)
             {
                 if (BtnExclamationPatch.btnExclamation != null)
@@ -19,11 +20,15 @@ namespace CraftMeOnce
                 return;
             }
             if (BtnExclamationPatch.btnExclamation == null) return;
-            if (ConfigurationFile.showExclamation.Value == ConfigurationFile.Toggle.Off) return;
+            if (ConfigurationFile.hintMode.Value == ConfigurationFile.HintMode.Off) return;
             
-            BtnExclamationPatch.btnExclamation.gameObject.SetActive(true);
+            if (Player.m_localPlayer == null) return;
+            if (Player.m_localPlayer.GetCurrentCraftingStation() == null) return;
             
-            Logger.Log("UpdateCraftingPanelPatch - Postfix");
+            BtnExclamationPatch.btnExclamation.gameObject.SetActive(
+                ConfigurationFile.hintMode.Value != ConfigurationFile.HintMode.Always &&
+                __instance.m_crafting.Find("TabsButtons/Craft").gameObject.activeSelf);
+
             Player player = Player.m_localPlayer;
             if (player == null) return;
                 
@@ -112,7 +117,7 @@ namespace CraftMeOnce
         public static Button btnExclamation;
         private static TextMeshProUGUI buttonText;
         
-        static void Postfix(InventoryGui __instance)
+        static void Prefix(InventoryGui __instance)
         {
             if (btnExclamationGo == null || btnExclamation == null || buttonText == null)
             {
@@ -135,15 +140,15 @@ namespace CraftMeOnce
                 btnExclamation.onClick = new Button.ButtonClickedEvent();
                 btnExclamation.onClick.AddListener(() =>
                 {
-                    ConfigurationFile.showExclamation.Value =
-                        ConfigurationFile.showExclamation.Value == ConfigurationFile.Toggle.Off
-                            ? ConfigurationFile.Toggle.On
-                            : ConfigurationFile.Toggle.Off;
+                    ConfigurationFile.hintMode.Value =
+                        ConfigurationFile.hintMode.Value == ConfigurationFile.HintMode.Off
+                            ? ConfigurationFile.HintMode.On
+                            : ConfigurationFile.HintMode.Off;
                     //The config reload will call the setupCrafting after the previous line
                 });
             }
             buttonText.text = ConfigurationFile.characterForNotCraftedItems.Value;
-            buttonText.color = ConfigurationFile.showExclamation.Value == ConfigurationFile.Toggle.On ? Color.yellow : Color.gray;
+            buttonText.color = ConfigurationFile.hintMode.Value != ConfigurationFile.HintMode.Off ? Color.yellow : Color.gray;
         }
     }
 }

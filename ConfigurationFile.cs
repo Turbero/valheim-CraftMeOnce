@@ -2,7 +2,6 @@
 using BepInEx;
 using System;
 using System.IO;
-using System.Reflection;
 using UnityEngine;
 
 namespace CraftMeOnce
@@ -13,10 +12,17 @@ namespace CraftMeOnce
             Off,
             On
         }
+
+        public enum HintMode
+        {
+            Off,
+            On,
+            Always
+        }
         
         public static ConfigEntry<Toggle> modEnabled;
         public static ConfigEntry<Toggle> debug;
-        public static ConfigEntry<Toggle> showExclamation;
+        public static ConfigEntry<HintMode> hintMode;
 
         public static ConfigEntry<KeyCode> btnGamepadKey;
         public static ConfigEntry<Vector2> btnPosition;
@@ -36,7 +42,7 @@ namespace CraftMeOnce
 
                 modEnabled = configFile.Bind("1 - General", "Mod Enabled", Toggle.On, "Enabling/Disabling this mod (default = On)");
                 debug = configFile.Bind("1 - General", "Debug Mode", Toggle.Off, "Enabling/Disabling the debugging in the console (default = Off)");
-                showExclamation = configFile.Bind("1 - General", "Show Exclamation", Toggle.On, "Turn on/off the exclamation mark in the names (default = On)");
+                hintMode = configFile.Bind("1 - General", "Hint Mode", HintMode.On, "Turn on/off the hint mark in the names or show it always without the toggle button (default = On)");
                 
                 btnGamepadKey = configFile.Bind("2 - Config", "Button Gamepad Key", KeyCode.JoystickButton0, "Gamepad key to link the button (default: JoystickButton0 - A");
                 btnPosition = configFile.Bind("2 - Config", "Button Position", new Vector2(-268, 566), "Left corner position for the map players list (default: x=-268, y=566)");
@@ -80,7 +86,10 @@ namespace CraftMeOnce
             //Reload mod stuff while game is active
             if (BtnExclamationPatch.btnExclamation != null)
             {
-                BtnExclamationPatch.btnExclamation.gameObject.SetActive(modEnabled.Value == Toggle.On);
+                BtnExclamationPatch.btnExclamation.gameObject.SetActive(
+                    modEnabled.Value == Toggle.On && 
+                    hintMode.Value != HintMode.Always &&
+                    InventoryGui.instance?.m_crafting?.Find("TabsButtons/Craft")?.gameObject.activeSelf == true);
                 GameManager.BindGamePad(BtnExclamationPatch.btnExclamation.gameObject.transform, btnGamepadKey.Value, new Vector2(-30, 0), InventoryGui.instance);
             }
 
