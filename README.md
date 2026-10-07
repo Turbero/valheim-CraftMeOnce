@@ -1,6 +1,6 @@
 # Craft Me Once
 
-Craft Me Once is a client mod that will let you know which recipes you have not crafted yet with an exclamation mark in the workstations.
+Craft Me Once is a client mod that will let you know which recipes you have not crafted yet with a hint mark in the workstations (an exclamation by default).
 This way you will be able to discover recipes that are made of other recipes easily.
 
 In addition, you can also repair all items in one click at workstations.
