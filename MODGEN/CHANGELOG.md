@@ -1,5 +1,10 @@
 ### CHANGELOG
 
+## 1.0.6
+
+* Reworked "Show Exclamation" option into "Hint Mode" to be able to choose a new "Always" mode where the hint is always shown and the hint button is hidden (default = On)
+* Workstation hint button and hint character of uncrafted recipes are now always both hidden at only-upgrade workstations, like the new Forge of Potential
+
 ## 1.0.5
 
 * Recompiled for compatibility with 1.0
