@@ -15,20 +15,18 @@ namespace CraftMeOnce
             Logger.Log("UpdateCraftingPanelPatch - Postfix");
             if (ConfigurationFile.modEnabled.Value == ConfigurationFile.Toggle.Off)
             {
-                if (BtnExclamationPatch.btnExclamation != null)
-                    BtnExclamationPatch.btnExclamation.gameObject.SetActive(false);
+                if (HintButtonPatch.hintButton != null)
+                    HintButtonPatch.hintButton.gameObject.SetActive(false);
                 return;
             }
-            if (BtnExclamationPatch.btnExclamation == null) return;
+            
+            if (HintButtonPatch.hintButton == null) return;
+            HintButtonPatch.updateHintButtonVisibility(__instance);
             if (ConfigurationFile.hintMode.Value == ConfigurationFile.HintMode.Off) return;
             
             if (Player.m_localPlayer == null) return;
             if (Player.m_localPlayer.GetCurrentCraftingStation() == null) return;
             
-            BtnExclamationPatch.btnExclamation.gameObject.SetActive(
-                ConfigurationFile.hintMode.Value != ConfigurationFile.HintMode.Always &&
-                __instance.m_crafting.Find("TabsButtons/Craft").gameObject.activeSelf);
-
             Player player = Player.m_localPlayer;
             if (player == null) return;
                 
@@ -111,34 +109,34 @@ namespace CraftMeOnce
     }
 
     [HarmonyPatch(typeof(InventoryGui), "SetupCrafting")]
-    public static class BtnExclamationPatch
+    public static class HintButtonPatch
     {
-        private static GameObject btnExclamationGo;
-        public static Button btnExclamation;
+        private static GameObject hintButtonGo;
+        public static Button hintButton;
         private static TextMeshProUGUI buttonText;
         
         static void Prefix(InventoryGui __instance)
         {
-            if (btnExclamationGo == null || btnExclamation == null || buttonText == null)
+            if (hintButtonGo == null || hintButton == null || buttonText == null)
             {
                 Transform copyButton = __instance.m_skillsDialog.transform.Find("SkillsFrame/Closebutton");
                 Transform parent = __instance.m_crafting.transform;
-                btnExclamationGo = Object.Instantiate(copyButton.gameObject, parent);
-                btnExclamationGo.name = "BtnExclamation";
-                btnExclamationGo.transform.SetParent(parent, false);
-                GameManager.BindGamePad(btnExclamationGo.transform, ConfigurationFile.btnGamepadKey.Value, new Vector2(-30, 0), __instance);
+                hintButtonGo = Object.Instantiate(copyButton.gameObject, parent);
+                hintButtonGo.name = "HintButton";
+                hintButtonGo.transform.SetParent(parent, false);
+                GameManager.BindGamePad(hintButtonGo.transform, ConfigurationFile.btnGamepadKey.Value, new Vector2(-30, 0), __instance);
                 
-                RectTransform buttonTextRect = btnExclamationGo.GetComponent<RectTransform>();
+                RectTransform buttonTextRect = hintButtonGo.GetComponent<RectTransform>();
                 buttonTextRect.anchoredPosition = ConfigurationFile.btnPosition.Value;
                 buttonTextRect.sizeDelta = ConfigurationFile.btnSize.Value;
-                buttonText = btnExclamationGo.GetComponentInChildren<TextMeshProUGUI>();
+                buttonText = hintButtonGo.GetComponentInChildren<TextMeshProUGUI>();
                 buttonText.font = GameManager.getFontAsset("Valheim-AveriaSerifLibre");
                 buttonText.fontStyle = FontStyles.Normal;
                 buttonText.alignment = TextAlignmentOptions.Center;
 
-                btnExclamation = btnExclamationGo.GetComponent<Button>();
-                btnExclamation.onClick = new Button.ButtonClickedEvent();
-                btnExclamation.onClick.AddListener(() =>
+                hintButton = hintButtonGo.GetComponent<Button>();
+                hintButton.onClick = new Button.ButtonClickedEvent();
+                hintButton.onClick.AddListener(() =>
                 {
                     ConfigurationFile.hintMode.Value =
                         ConfigurationFile.hintMode.Value == ConfigurationFile.HintMode.Off
@@ -149,6 +147,14 @@ namespace CraftMeOnce
             }
             buttonText.text = ConfigurationFile.characterForNotCraftedItems.Value;
             buttonText.color = ConfigurationFile.hintMode.Value != ConfigurationFile.HintMode.Off ? Color.yellow : Color.gray;
+        }
+
+        public static void updateHintButtonVisibility(InventoryGui inventoryGui)
+        {
+            HintButtonPatch.hintButton.gameObject.SetActive(
+                ConfigurationFile.modEnabled.Value == ConfigurationFile.Toggle.On &&
+                ConfigurationFile.hintMode.Value != ConfigurationFile.HintMode.Always &&
+                inventoryGui.m_crafting.Find("TabsButtons/Craft").gameObject.activeSelf);
         }
     }
 }

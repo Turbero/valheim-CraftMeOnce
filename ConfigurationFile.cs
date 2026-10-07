@@ -46,7 +46,7 @@ namespace CraftMeOnce
                 
                 btnGamepadKey = configFile.Bind("2 - Config", "Button Gamepad Key", KeyCode.JoystickButton0, "Gamepad key to link the button (default: JoystickButton0 - A");
                 btnPosition = configFile.Bind("2 - Config", "Button Position", new Vector2(-268, 566), "Left corner position for the map players list (default: x=-268, y=566)");
-                btnSize = configFile.Bind("2 - Config", "Button Size", new Vector2(29, 29), "Width/Height of the button exclamation in the workstations (default: x=29, y=29)");
+                btnSize = configFile.Bind("2 - Config", "Button Size", new Vector2(29, 29), "Width/Height of the hint button in the workstations (default: x=29, y=29)");
                 characterForNotCraftedItems = configFile.Bind("2 - Config", "Character for Not Crafted Items", "!", "Character to show the item has never been crafted (default = '!')");
                 repairAll = configFile.Bind("2 - Config", "Repair All", Toggle.On, "Enable/disable repairing all items in one click (default = true)");
                 repairAllItemsText = configFile.Bind("2 - Config", "Repair All Text", "Repair all items", "Repair all text for repair button tooltip");
@@ -84,13 +84,10 @@ namespace CraftMeOnce
         private static void SettingsChanged(object sender, EventArgs e)
         {
             //Reload mod stuff while game is active
-            if (BtnExclamationPatch.btnExclamation != null)
+            if (HintButtonPatch.hintButton != null)
             {
-                BtnExclamationPatch.btnExclamation.gameObject.SetActive(
-                    modEnabled.Value == Toggle.On && 
-                    hintMode.Value != HintMode.Always &&
-                    InventoryGui.instance?.m_crafting?.Find("TabsButtons/Craft")?.gameObject.activeSelf == true);
-                GameManager.BindGamePad(BtnExclamationPatch.btnExclamation.gameObject.transform, btnGamepadKey.Value, new Vector2(-30, 0), InventoryGui.instance);
+                HintButtonPatch.updateHintButtonVisibility(InventoryGui.instance);
+                GameManager.BindGamePad(HintButtonPatch.hintButton.gameObject.transform, btnGamepadKey.Value, new Vector2(-30, 0), InventoryGui.instance);
             }
 
             if (InventoryGui.IsVisible())
