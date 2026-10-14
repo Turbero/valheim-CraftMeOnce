@@ -1,17 +1,20 @@
 # Craft Me Once
 
 Craft Me Once is a client mod that will let you know which recipes you have not crafted yet with a hint mark in the workstations (an exclamation by default).
-This way you will be able to discover recipes that are made of other recipes easily.
+
+* You will be able to discover recipes that are made of other recipes easily.
+* It will help completionists to unlock their achievements
+* It's also available at vendors. They show you the hint with an extra field indication how many item they're still hiding from you.
 
 In addition, you can also repair all items in one click at workstations.
 
 ## Usage instructions
 
-Open any workstation, then check the recipes list. They will have a yellow "!" in the list if you haven't crafted yet at least once.
-
-Enable/disable the mod or show debug logs by modifying the .cfg file while inside the game, you don't need to close the game.
+Open any workstation and then check the recipes list, or talk to vendors. They will have a yellow "!" in the list if you haven't crafted/bought at least once yet.
 
 ![](https://i.imgur.com/D23mRzI.jpeg)
+
+![](https://i.imgur.com/Pz02jcA.jpeg)
 
 ## Compatibility
 
