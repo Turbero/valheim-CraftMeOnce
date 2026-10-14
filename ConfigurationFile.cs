@@ -23,6 +23,7 @@ namespace CraftMeOnce
         public static ConfigEntry<Toggle> modEnabled;
         public static ConfigEntry<Toggle> debug;
         public static ConfigEntry<HintMode> hintMode;
+        public static ConfigEntry<HintMode> vendorHintMode;
 
         public static ConfigEntry<KeyCode> btnGamepadKey;
         public static ConfigEntry<Vector2> btnPosition;
@@ -30,6 +31,12 @@ namespace CraftMeOnce
         public static ConfigEntry<string> characterForNotCraftedItems;
         public static ConfigEntry<Toggle> repairAll;
         public static ConfigEntry<string> repairAllItemsText;
+        
+        public static ConfigEntry<KeyCode> vendorBtnGamepadKey;
+        public static ConfigEntry<Vector2> vendorBtnPosition;
+        public static ConfigEntry<Vector2> vendorBtnSize;
+        public static ConfigEntry<string> vendorCharacterForNotObtainedItems;
+        public static ConfigEntry<string> vendorHiddenElementsText;
         
         public static ConfigFile configFile;
         private static readonly string ConfigFileName = CraftMeOnce.GUID + ".cfg";
@@ -42,14 +49,21 @@ namespace CraftMeOnce
 
                 modEnabled = configFile.Bind("1 - General", "Mod Enabled", Toggle.On, "Enabling/Disabling this mod (default = On)");
                 debug = configFile.Bind("1 - General", "Debug Mode", Toggle.Off, "Enabling/Disabling the debugging in the console (default = Off)");
-                hintMode = configFile.Bind("1 - General", "Hint Mode", HintMode.On, "Turn on/off the hint mark in the names or show it always without the toggle button (default = On)");
+                hintMode = configFile.Bind("1 - General", "Hint Mode - Workstations", HintMode.On, "Turn on/off the hint mark in the recipe names or show it always without the toggle button (default = On)");
+                vendorHintMode = configFile.Bind("1 - General", "Hint Mode - Vendors", HintMode.On, "Turn on/off the hint mark in the trader item names or show it always without the toggle button (default = On)");
+
+                btnGamepadKey = configFile.Bind("2 - Config Workstations", "Button Gamepad Key", KeyCode.JoystickButton0, "Gamepad key to link the button (default: JoystickButton0 - A");
+                btnPosition = configFile.Bind("2 - Config Workstations", "Button Position", new Vector2(-268, 566), "Left corner position for the hint button (default: x=-268, y=566)");
+                btnSize = configFile.Bind("2 - Config Workstations", "Button Size", new Vector2(29, 29), "Width/Height of the hint button (default: x=29, y=29)");
+                characterForNotCraftedItems = configFile.Bind("2 - Config Workstations", "Character for Not Crafted Items", "!", "Character to show the item has never been crafted (default = '!')");
+                repairAll = configFile.Bind("2 - Config Workstations", "Repair All", Toggle.On, "Enable/disable repairing all items in one click (default = true)");
+                repairAllItemsText = configFile.Bind("2 - Config Workstations", "Repair All Text", "Repair all items", "Repair all text for repair button tooltip");
                 
-                btnGamepadKey = configFile.Bind("2 - Config", "Button Gamepad Key", KeyCode.JoystickButton0, "Gamepad key to link the button (default: JoystickButton0 - A");
-                btnPosition = configFile.Bind("2 - Config", "Button Position", new Vector2(-268, 566), "Left corner position for the map players list (default: x=-268, y=566)");
-                btnSize = configFile.Bind("2 - Config", "Button Size", new Vector2(29, 29), "Width/Height of the hint button in the workstations (default: x=29, y=29)");
-                characterForNotCraftedItems = configFile.Bind("2 - Config", "Character for Not Crafted Items", "!", "Character to show the item has never been crafted (default = '!')");
-                repairAll = configFile.Bind("2 - Config", "Repair All", Toggle.On, "Enable/disable repairing all items in one click (default = true)");
-                repairAllItemsText = configFile.Bind("2 - Config", "Repair All Text", "Repair all items", "Repair all text for repair button tooltip");
+                vendorBtnGamepadKey = configFile.Bind("3 - Config Vendors", "Button Gamepad Key", KeyCode.JoystickButton0, "Gamepad key to link the button (default: JoystickButton0 - A");
+                vendorBtnPosition = configFile.Bind("3 - Config Vendors", "Button Position", new Vector2(-90, 573), "Left corner position for the hint button (default: x=-90, y=573)");
+                vendorBtnSize = configFile.Bind("3 - Config Vendors", "Button Size", new Vector2(29, 29), "Width/Height of the hint button (default: x=29, y=29)");
+                vendorCharacterForNotObtainedItems = configFile.Bind("3 - Config Vendors", "Character for Not Obtained Items", "!", "Character to show the item has never been obtained (default = '!')");
+                vendorHiddenElementsText = configFile.Bind("3 - Config Vendors", "Hidden elements translate text", "Hidden\nelements", "Translation for hidden elements count text in the vendor window");
                 
                 SetupWatcher();
             }
@@ -86,14 +100,22 @@ namespace CraftMeOnce
             //Reload mod stuff while game is active
             if (HintButtonPatch.hintButton != null)
             {
-                HintButtonPatch.updateHintButtonVisibility(InventoryGui.instance);
-                GameManager.BindGamePad(HintButtonPatch.hintButton.gameObject.transform, btnGamepadKey.Value, new Vector2(-30, 0), InventoryGui.instance);
+                HintButtonPatch.updateHintButton(InventoryGui.instance);
             }
-
             if (InventoryGui.IsVisible())
             {
                 //Reload
                 GameManager.CallPrivateMethod(InventoryGui.instance, "SetupCrafting");
+            }
+
+            if (StoreGuiShowPatch.vendorHintButton != null)
+            {
+                StoreGuiShowPatch.updateVendorHintButton();
+            }
+            if (StoreGui.IsVisible())
+            {
+                //Reload
+                GameManager.CallPrivateMethod(StoreGui.instance, "FillList");
             }
         }
     }
