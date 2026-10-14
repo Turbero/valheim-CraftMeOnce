@@ -1,5 +1,20 @@
 ### CHANGELOG
 
+## 1.1.0
+
+Vendors update!
+
+Added:
+* A new hint button is available at vendors to see which items have not been acquired by the player yet
+* A new field is available at vendors window showing how many items they have hidden to the player at that moment
+
+Changed:
+* Reworked config names and sections (delete .cfg and recreate if any trouble)
+
+Fixed:
+* Hint buttons position and size can be changed in-game from config file now
+* Some descriptions in the config file
+
 ## 1.0.6
 
 * Reworked "Show Exclamation" option into "Hint Mode" to be able to choose a new "Always" mode where the hint is always shown and the hint button is hidden (default = On)
