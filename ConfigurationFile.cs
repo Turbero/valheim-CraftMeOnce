@@ -1,6 +1,7 @@
 ﻿using BepInEx.Configuration;
 using BepInEx;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -24,6 +25,7 @@ namespace CraftMeOnce
         public static ConfigEntry<Toggle> debug;
         public static ConfigEntry<HintMode> hintMode;
         public static ConfigEntry<HintMode> vendorHintMode;
+        public static ConfigEntry<HintMode> hammerHintMode;
 
         public static ConfigEntry<KeyCode> btnGamepadKey;
         public static ConfigEntry<Vector2> btnPosition;
@@ -38,6 +40,11 @@ namespace CraftMeOnce
         public static ConfigEntry<string> vendorCharacterForNotObtainedItems;
         public static ConfigEntry<string> vendorHiddenElementsText;
         
+        public static ConfigEntry<KeyCode> hammerBtnGamepadKey;
+        public static ConfigEntry<Vector2> hammerBtnPosition;
+        public static ConfigEntry<Vector2> hammerBtnSize;
+        public static ConfigEntry<string> hammerCharacterForNotObtainedItems;
+        
         public static ConfigFile configFile;
         private static readonly string ConfigFileName = CraftMeOnce.GUID + ".cfg";
         private static readonly string ConfigFileFullPath = Paths.ConfigPath + Path.DirectorySeparatorChar + ConfigFileName;
@@ -51,6 +58,7 @@ namespace CraftMeOnce
                 debug = configFile.Bind("1 - General", "Debug Mode", Toggle.Off, "Enabling/Disabling the debugging in the console (default = Off)");
                 hintMode = configFile.Bind("1 - General", "Hint Mode - Workstations", HintMode.On, "Turn on/off the hint mark in the recipe names or show it always without the toggle button (default = On)");
                 vendorHintMode = configFile.Bind("1 - General", "Hint Mode - Vendors", HintMode.On, "Turn on/off the hint mark in the trader item names or show it always without the toggle button (default = On)");
+                hammerHintMode = configFile.Bind("1 - General", "Hint Mode - Hammer Menu", HintMode.On, "Turn on/off the hint mark in the hammer menu or show it always without the toggle button (default = On)");
 
                 btnGamepadKey = configFile.Bind("2 - Config Workstations", "Button Gamepad Key", KeyCode.JoystickButton0, "Gamepad key to link the button (default: JoystickButton0 - A");
                 btnPosition = configFile.Bind("2 - Config Workstations", "Button Position", new Vector2(-268, 566), "Left corner position for the hint button (default: x=-268, y=566)");
@@ -65,6 +73,10 @@ namespace CraftMeOnce
                 vendorCharacterForNotObtainedItems = configFile.Bind("3 - Config Vendors", "Character for Not Obtained Items", "!", "Character to show the item has never been obtained (default = '!')");
                 vendorHiddenElementsText = configFile.Bind("3 - Config Vendors", "Hidden elements translate text", "Hidden\nelements", "Translation for hidden elements count text in the vendor window");
                 
+                hammerBtnGamepadKey = configFile.Bind("4 - Config Hammer Menu", "Button Gamepad Key", KeyCode.JoystickButton0, "Gamepad key to link the button (default: JoystickButton0 - A");
+                hammerBtnPosition = configFile.Bind("4 - Config Hammer Menu", "Button Position", new Vector2(-519, 730), "Left corner position for the hint button (default: x=-90, y=573)");
+                hammerBtnSize = configFile.Bind("4 - Config Hammer Menu", "Button Size", new Vector2(32, 32), "Width/Height of the hint button (default: x=29, y=29)");
+                hammerCharacterForNotObtainedItems = configFile.Bind("4 - Config Hammer Menu", "Character for Not Obtained Items", "!", "Character to show the item has never been placed (default = '!')");
                 SetupWatcher();
             }
         }
@@ -116,6 +128,21 @@ namespace CraftMeOnce
             {
                 //Reload
                 GameManager.CallPrivateMethod(StoreGui.instance, "FillList");
+            }
+
+            if (BuildUiPieceButtonPatch.hammerHintButton != null)
+            {
+                BuildUiPieceButtonPatch.updateHammerHintButton();
+            }
+            
+            if (Hud.InBuildUi())
+            {
+                //Reload
+                List<BuildUiPieceButton> currents = (List<BuildUiPieceButton>) GameManager.GetPrivateValue(Hud.instance.m_buildUi, "m_pieceButtons");
+                foreach (BuildUiPieceButton pieceButton in currents)
+                {
+                    BuildUiPieceButtonPatch.Postfix(pieceButton, pieceButton.Piece, Hud.instance.m_buildUi);
+                }
             }
         }
     }

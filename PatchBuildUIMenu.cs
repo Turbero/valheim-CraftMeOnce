@@ -1,21 +1,31 @@
 using HarmonyLib;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace CraftMeOnce
 {
     [HarmonyPatch(typeof(BuildUiPieceButton), "Setup")]
     public class BuildUiPieceButtonPatch
     {
+        private static GameObject hammerHintButtonGo;
+        public static Button hammerHintButton;
+        private static TextMeshProUGUI hammerButtonText;
 
-        static void Postfix(BuildUiPieceButton __instance, Piece pieceInfo, BuildUi buildUi)
+        public static void Postfix(BuildUiPieceButton __instance, Piece pieceInfo, BuildUi buildUi)
         {
             Logger.Log("BuildUiPieceButtonPatch - Postfix");
+            if (hammerHintButtonGo == null || hammerHintButton == null || hammerButtonText == null)
+            {
+                createHammerHintButton();
+            }
+            updateHammerHintButton();
 
             string pieceName = pieceInfo.name.Replace("(Clone)", "");
+            Logger.Log("Piece name: " + pieceName);
+            Logger.Log("Piece m_name: " + pieceInfo.m_name);
             if (pieceName.Equals("piece_repair")) return;
 
-            Logger.Log("Piece name: "+pieceName);
             GameObject buildPieceSelectButtonClone = __instance.gameObject;
             GameObject hintMarkInBuildPiece = buildPieceSelectButtonClone.transform.Find("Hint Mark")?.gameObject;
             if (hintMarkInBuildPiece == null)
@@ -32,14 +42,56 @@ namespace CraftMeOnce
                 enrichedText.fontSizeMax = 16;
                 enrichedText.fontSizeMin = 1;
                 enrichedText.alignment = TextAlignmentOptions.Center;
-                Logger.Log("hintMarkInBuildPiece created for "+pieceName);
+                Logger.Log("hintMarkInBuildPiece created for " + pieceName);
             }
-            
-            bool hasPieceEverBeenCrafted = GameManager.HasPieceEverBeenCrafted(pieceName);
+
+            if (ConfigurationFile.hammerHintMode.Value == ConfigurationFile.HintMode.Off) {
+                hintMarkInBuildPiece.GetComponent<TextMeshProUGUI>().text = "";
+                return;
+            }
+
+            bool hasPieceEverBeenCrafted = GameManager.HasPieceEverBeenCrafted(pieceInfo);
             Logger.Log("pieceName "+pieceName+" ever crafted? "+hasPieceEverBeenCrafted);
             hintMarkInBuildPiece.GetComponent<TextMeshProUGUI>().text = hasPieceEverBeenCrafted 
                 ? "" 
-                : "<color=yellow>" + ConfigurationFile.characterForNotCraftedItems.Value + "</color>";
+                : "<color=yellow>" + ConfigurationFile.hammerCharacterForNotObtainedItems.Value + "</color>";
+        }
+        
+        private static void createHammerHintButton()
+        {
+            Transform copyButton = InventoryGui.instance.m_skillsDialog.transform.Find("SkillsFrame/Closebutton");
+            Transform parent = Hud.instance.m_buildUi.gameObject.transform;
+            hammerHintButtonGo = Object.Instantiate(copyButton.gameObject, parent);
+            hammerHintButtonGo.name = "HammerHintButton";
+            
+            hammerButtonText = hammerHintButtonGo.GetComponentInChildren<TextMeshProUGUI>();
+            hammerButtonText.font = GameManager.getFontAsset("Valheim-AveriaSerifLibre");
+            hammerButtonText.fontStyle = FontStyles.Normal;
+            hammerButtonText.alignment = TextAlignmentOptions.Center;
+
+            hammerHintButton = hammerHintButtonGo.GetComponent<Button>();
+            hammerHintButton.onClick = new Button.ButtonClickedEvent();
+            hammerHintButton.onClick.AddListener(() =>
+            {
+                ConfigurationFile.hammerHintMode.Value =
+                    ConfigurationFile.hammerHintMode.Value == ConfigurationFile.HintMode.Off
+                        ? ConfigurationFile.HintMode.On
+                        : ConfigurationFile.HintMode.Off;
+                //The config reload will run the reload after the previous line
+            });
+        }
+        
+        public static void updateHammerHintButton()
+        {
+            hammerHintButton.GetComponent<RectTransform>().anchoredPosition = ConfigurationFile.hammerBtnPosition.Value;
+            hammerHintButton.GetComponent<RectTransform>().sizeDelta = ConfigurationFile.hammerBtnSize.Value;
+            hammerButtonText.text = ConfigurationFile.hammerCharacterForNotObtainedItems.Value;
+            hammerButtonText.color = ConfigurationFile.hammerHintMode.Value != ConfigurationFile.HintMode.Off ? Color.yellow : Color.gray;
+            GameManager.BindGamePad(hammerHintButton.gameObject.transform, ConfigurationFile.hammerBtnGamepadKey.Value, new Vector2(ConfigurationFile.hammerBtnSize.Value.x - 1, 0));
+            
+            hammerHintButton.gameObject.SetActive(
+                ConfigurationFile.modEnabled.Value == ConfigurationFile.Toggle.On &&
+                ConfigurationFile.hammerHintMode.Value != ConfigurationFile.HintMode.Always);
         }
     }
     
@@ -50,11 +102,10 @@ namespace CraftMeOnce
         {
             Logger.Log("TryPlacePiecePatch - Postfix");
             
-            string pieceName = piece.name.Replace("(Clone)", "");
-            bool hasPieceEverBeenCrafted = GameManager.HasPieceEverBeenCrafted(pieceName);
+            bool hasPieceEverBeenCrafted = GameManager.HasPieceEverBeenCrafted(piece);
             if (!hasPieceEverBeenCrafted)
             {
-                GameManager.SetPieceEverBeenCrafted(pieceName);
+                GameManager.SetPieceEverBeenCrafted(piece);
             }
         }
     }

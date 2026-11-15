@@ -10,6 +10,8 @@ namespace CraftMeOnce
 {
     public class GameManager
     {
+        private static readonly string CUSTOM_DATA_CRAFTED_PIECE_NAMES = "CraftMeOnce_CraftedPieceNames";
+        
         private static readonly Dictionary<string, TMP_FontAsset> cachedFonts = new Dictionary<string, TMP_FontAsset>();
         
         public static object GetPrivateValue(object obj, string name, BindingFlags bindingAttr = BindingFlags.Instance | BindingFlags.NonPublic)
@@ -34,8 +36,7 @@ namespace CraftMeOnce
         
         public static void BindGamePad(Transform buttonGo, KeyCode gamepadKeyCode, Vector2 hintAnchoredPosition, InventoryGui inventoryGui = null)
         {
-            UIGamePad uiGamePad = null;
-            if (buttonGo.TryGetComponent(out uiGamePad))
+            if (buttonGo.TryGetComponent(out UIGamePad uiGamePad))
             {
                 string gamepadKey = KeyCodeToString(gamepadKeyCode);
                 if (ZInput.instance != null)
@@ -59,7 +60,7 @@ namespace CraftMeOnce
             }
         }
         
-        public static string KeyCodeToString(KeyCode keyCode)
+        private static string KeyCodeToString(KeyCode keyCode)
         {
             return ((int)keyCode - 330) switch
             {
@@ -111,31 +112,31 @@ namespace CraftMeOnce
             }
         }
 
-        public static bool HasPieceEverBeenCrafted(string pieceName)
+        public static bool HasPieceEverBeenCrafted(Piece piece)
         {
-            if (Player.m_localPlayer.m_customData.TryGetValue("CraftMeOnce_CraftedPieces", out string craftedPieces))
+            string pieceName = piece.name.Replace("(Clone)", "");
+            if (Player.m_localPlayer.m_customData.TryGetValue(CUSTOM_DATA_CRAFTED_PIECE_NAMES, out string craftedPieces))
                 return craftedPieces.Contains(","+pieceName);
             return false;
         }
         
-        //Player.m_localPlayer.m_customData.Remove("CraftMeOnce_CraftedPieces")
-        
-        public static void SetPieceEverBeenCrafted(string pieceName)
+        public static void SetPieceEverBeenCrafted(Piece piece)
         {
-            if (Player.m_localPlayer.m_customData.TryGetValue("CraftMeOnce_CraftedPieces", out string craftedPieces))
+            string pieceName = piece.name.Replace("(Clone)", "");
+            if (Player.m_localPlayer.m_customData.TryGetValue(CUSTOM_DATA_CRAFTED_PIECE_NAMES, out string craftedPieces))
             {
                 if (!craftedPieces.Contains(","+pieceName))
                 {
                     List<string> craftedPiecesList = craftedPieces.Split(',').ToList();
                     craftedPiecesList.Add(pieceName);
                     craftedPiecesList.Sort();
-                    Player.m_localPlayer.m_customData["CraftMeOnce_CraftedPieces"] = string.Join(",", craftedPiecesList);
+                    Player.m_localPlayer.m_customData[CUSTOM_DATA_CRAFTED_PIECE_NAMES] = string.Join(",", craftedPiecesList);
                 }
             }
             else
             {
                 craftedPieces = "," + pieceName;
-                Player.m_localPlayer.m_customData.Add("CraftMeOnce_CraftedPieces", craftedPieces);
+                Player.m_localPlayer.m_customData.Add(CUSTOM_DATA_CRAFTED_PIECE_NAMES, craftedPieces);
             }
         }
     }
