@@ -75,6 +75,7 @@
     <Compile Include="GameManager.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Patch.cs" />
+    <Compile Include="PatchBuildUIMenu.cs" />
     <Compile Include="PatchRepair.cs" />
     <Compile Include="PatchVendor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

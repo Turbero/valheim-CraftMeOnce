@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using HarmonyLib;
 using TMPro;
@@ -107,6 +108,34 @@ namespace CraftMeOnce
             else
             {
                 return cachedFonts.GetValueSafe(name);
+            }
+        }
+
+        public static bool HasPieceEverBeenCrafted(string pieceName)
+        {
+            if (Player.m_localPlayer.m_customData.TryGetValue("CraftMeOnce_CraftedPieces", out string craftedPieces))
+                return craftedPieces.Contains(","+pieceName);
+            return false;
+        }
+        
+        //Player.m_localPlayer.m_customData.Remove("CraftMeOnce_CraftedPieces")
+        
+        public static void SetPieceEverBeenCrafted(string pieceName)
+        {
+            if (Player.m_localPlayer.m_customData.TryGetValue("CraftMeOnce_CraftedPieces", out string craftedPieces))
+            {
+                if (!craftedPieces.Contains(","+pieceName))
+                {
+                    List<string> craftedPiecesList = craftedPieces.Split(',').ToList();
+                    craftedPiecesList.Add(pieceName);
+                    craftedPiecesList.Sort();
+                    Player.m_localPlayer.m_customData["CraftMeOnce_CraftedPieces"] = string.Join(",", craftedPiecesList);
+                }
+            }
+            else
+            {
+                craftedPieces = "," + pieceName;
+                Player.m_localPlayer.m_customData.Add("CraftMeOnce_CraftedPieces", craftedPieces);
             }
         }
     }
