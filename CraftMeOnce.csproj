@@ -79,6 +79,7 @@
     <Compile Include="PatchRepair.cs" />
     <Compile Include="PatchVendor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PatchSpawn.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />

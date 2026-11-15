@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using HarmonyLib;
 using TMPro;
 using UnityEngine;
 
@@ -91,26 +90,6 @@ namespace CraftMeOnce
                     }
                 }
             }
-        }
-    }
-
-    [HarmonyPatch(typeof(Player), "OnSpawned")]
-    public static class Player_OnSpawned
-    {
-        static void Postfix(bool spawnValkyrie)
-        {
-            Logger.Log("Player_OnSpawned");
-            Caching.AddItemDrops();
-        }
-    }
-    
-    [HarmonyPatch(typeof(Localization), "SetLanguage")]
-    public class Localization_SetLanguage_Patch
-    {
-        static void Postfix(string language)
-        {
-            Logger.Log($"Language changed to: {language}");
-            Caching.AddItemDrops();
         }
     }
 }

@@ -11,6 +11,7 @@ namespace CraftMeOnce
     public class GameManager
     {
         private static readonly string CUSTOM_DATA_CRAFTED_PIECE_NAMES = "CraftMeOnce_CraftedPieceNames";
+        private static readonly string CUSTOM_DATA_CRAFTED_PIECE_NAMES_ALL_LANG = "CraftMeOnce_CraftedPieceNamesAllLang";
         
         private static readonly Dictionary<string, TMP_FontAsset> cachedFonts = new Dictionary<string, TMP_FontAsset>();
         
@@ -137,6 +138,32 @@ namespace CraftMeOnce
             {
                 craftedPieces = "," + pieceName;
                 Player.m_localPlayer.m_customData.Add(CUSTOM_DATA_CRAFTED_PIECE_NAMES, craftedPieces);
+            }
+        }
+        
+        public static bool HasPieceEverBeenCraftedAllLang(string pieceNameAllLang)
+        {
+            if (Player.m_localPlayer.m_customData.TryGetValue(CUSTOM_DATA_CRAFTED_PIECE_NAMES_ALL_LANG, out string craftedPiecesAllLang))
+                return craftedPiecesAllLang.Contains(","+pieceNameAllLang);
+            return false;
+        }
+        
+        public static void SetPieceEverBeenCraftedAllLang(string pieceNameAllLang)
+        {
+            if (Player.m_localPlayer.m_customData.TryGetValue(CUSTOM_DATA_CRAFTED_PIECE_NAMES_ALL_LANG, out string craftedPiecesAllLang))
+            {
+                if (!craftedPiecesAllLang.Contains(","+pieceNameAllLang))
+                {
+                    List<string> craftedPiecesAllLangList = craftedPiecesAllLang.Split(',').ToList();
+                    craftedPiecesAllLangList.Add(pieceNameAllLang);
+                    craftedPiecesAllLangList.Sort();
+                    Player.m_localPlayer.m_customData[CUSTOM_DATA_CRAFTED_PIECE_NAMES_ALL_LANG] = string.Join(",", craftedPiecesAllLangList);
+                }
+            }
+            else
+            {
+                craftedPiecesAllLang = "," + pieceNameAllLang;
+                Player.m_localPlayer.m_customData.Add(CUSTOM_DATA_CRAFTED_PIECE_NAMES_ALL_LANG, craftedPiecesAllLang);
             }
         }
     }
