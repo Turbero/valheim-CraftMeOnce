@@ -14,7 +14,7 @@ namespace CraftMeOnce
         private static TextMeshProUGUI vendorButtonText;
         private static TextMeshProUGUI hiddenItemsText;
         
-        private static GameObject hiddenItemsGO;
+        public static GameObject hiddenItemsGO;
         
         public static void Postfix(StoreGui __instance, Trader trader)
         {
@@ -31,7 +31,7 @@ namespace CraftMeOnce
             {
                 hiddenItemsGO = new GameObject("HiddenItems", typeof(RectTransform), typeof(TextMeshProUGUI));
                 hiddenItemsGO.transform.SetParent(__instance.transform.Find("Store"), false);
-                hiddenItemsGO.GetComponent<RectTransform>().anchoredPosition = new Vector2(80, -265);
+                hiddenItemsGO.GetComponent<RectTransform>().anchoredPosition = ConfigurationFile.vendorHiddenElementsPosition.Value;
                 hiddenItemsText = hiddenItemsGO.GetComponent<TextMeshProUGUI>();
                 hiddenItemsText.GetComponent<TextMeshProUGUI>().font = GameManager.getFontAsset("Valheim-AveriaSerifLibre");
                 hiddenItemsText.GetComponent<TextMeshProUGUI>().fontStyle = FontStyles.Bold;
@@ -40,6 +40,7 @@ namespace CraftMeOnce
                 hiddenItemsText.GetComponent<TextMeshProUGUI>().fontSizeMin = 8;
                 hiddenItemsText.GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.Center;
             }
+            hiddenItemsGO.SetActive(ConfigurationFile.vendorHiddenElements.Value == ConfigurationFile.Toggle.On);
             updateVendorHintButton();
             updateVendorHintFlags(__instance);
         }

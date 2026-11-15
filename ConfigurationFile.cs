@@ -38,7 +38,9 @@ namespace CraftMeOnce
         public static ConfigEntry<Vector2> vendorBtnPosition;
         public static ConfigEntry<Vector2> vendorBtnSize;
         public static ConfigEntry<string> vendorCharacterForNotObtainedItems;
+        public static ConfigEntry<Toggle> vendorHiddenElements;
         public static ConfigEntry<string> vendorHiddenElementsText;
+        public static ConfigEntry<Vector2> vendorHiddenElementsPosition;
         
         public static ConfigEntry<KeyCode> hammerBtnGamepadKey;
         public static ConfigEntry<Vector2> hammerBtnPosition;
@@ -71,8 +73,10 @@ namespace CraftMeOnce
                 vendorBtnPosition = configFile.Bind("3 - Config Vendors", "Button Position", new Vector2(-90, 573), "Left corner position for the hint button (default: x=-90, y=573)");
                 vendorBtnSize = configFile.Bind("3 - Config Vendors", "Button Size", new Vector2(29, 29), "Width/Height of the hint button (default: x=29, y=29)");
                 vendorCharacterForNotObtainedItems = configFile.Bind("3 - Config Vendors", "Character for Not Obtained Items", "!", "Character to show the item has never been obtained (default = '!')");
+                vendorHiddenElements = configFile.Bind("3 - Config Vendors", "Hidden elements text", Toggle.On, "Enabling/Disabling the debugging in the console (default = Off)");
                 vendorHiddenElementsText = configFile.Bind("3 - Config Vendors", "Hidden elements translate text", "Hidden\nelements", "Translation for hidden elements count text in the vendor window");
-                
+                vendorHiddenElementsPosition = configFile.Bind("3 - Config Vendors", "Hidden elements Position", new Vector2(80, -265), "Left corner position for the hint button (default: x=-90, y=573)");
+
                 hammerBtnGamepadKey = configFile.Bind("4 - Config Hammer Menu", "Button Gamepad Key", KeyCode.JoystickButton0, "Gamepad key to link the button (default: JoystickButton0 - A");
                 hammerBtnPosition = configFile.Bind("4 - Config Hammer Menu", "Button Position", new Vector2(-519, 730), "Left corner position for the hint button (default: x=-90, y=573)");
                 hammerBtnSize = configFile.Bind("4 - Config Hammer Menu", "Button Size", new Vector2(32, 32), "Width/Height of the hint button (default: x=29, y=29)");
@@ -123,6 +127,12 @@ namespace CraftMeOnce
             if (StoreGuiShowPatch.vendorHintButton != null)
             {
                 StoreGuiShowPatch.updateVendorHintButton();
+            }
+
+            if (StoreGuiShowPatch.hiddenItemsGO != null)
+            {
+                StoreGuiShowPatch.hiddenItemsGO.GetComponent<RectTransform>().anchoredPosition = vendorHiddenElementsPosition.Value;
+                StoreGuiShowPatch.hiddenItemsGO.SetActive(vendorHiddenElements.Value == Toggle.On);
             }
             if (StoreGui.IsVisible())
             {
