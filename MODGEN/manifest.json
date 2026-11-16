@@ -2,7 +2,7 @@
   "name": "CraftMeOnce",
   "version_number": "1.2.0",
   "website_url": "https://github.com/Turbero/valheim-CraftMeOnce",
-  "description": "Client mod to know with an !-mark which recipes you have not crafted/bought/placed yet at workstations/vendors/hammer, so you can unlock recipes made of other recipes and complete achievements with ease. Create everything in the game for achievements if you wish!",
+  "description": "Client mod to know with an !-mark which recipes you have not crafted/bought/placed yet at workstations/vendors/hammer. Unlock recipes made of other recipes and complete achievements with ease. Create everything in the game for achievements if you wish!",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2360"
   ]
