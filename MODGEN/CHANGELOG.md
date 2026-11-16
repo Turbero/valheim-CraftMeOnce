@@ -1,5 +1,18 @@
 ### CHANGELOG
 
+## 1.2.0
+
+Hammer update!
+
+* The hammer menu will show you the hint mark on pieces you haven't placed yet 
+  * Any piece placed for first time, the hint mark will disappear for that piece
+  * Compatible with other mods that add more pieces, categories and tabs to the hammer menu
+  * A new hint button is added to show/hide the hint mark in the hammer menu, configurable in the .cfg file
+  * Pieces already marked in the achievement "The Carpenter" are automatically considered as ever placed
+
+Others:
+* Added options to show/hide and move the "hidden elements" in the .cfg file
+
 ## 1.1.0
 
 Vendors update!
