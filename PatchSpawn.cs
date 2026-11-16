@@ -16,10 +16,11 @@ namespace CraftMeOnce
                 .Find(achList => achList.name.Equals("AllBuildPieces"));
             foreach (Achievement.DictStatRequirement dicStatReq in achievement.m_piecePlacedTriggers)
             {
-                //TODO add to customData if it doesn't exist yet
                 string pieceNameAllLang = dicStatReq.m_stat;
-                if (!GameManager.HasPieceEverBeenCraftedAllLang(pieceNameAllLang))
-                    GameManager.SetPieceEverBeenCraftedAllLang(pieceNameAllLang);
+                PlayerProfile playerProfile = (PlayerProfile)GameManager.GetPrivateValue(Game.instance, "m_playerProfile");
+                if (dicStatReq.IsMet(playerProfile.m_playerStats[(int) DifficultyRequirement.Any].m_piecesPlacedStats, DifficultyRequirement.Any))
+                    if (!GameManager.HasPieceEverBeenCrafted(pieceNameAllLang))
+                        GameManager.SetPieceEverBeenCrafted(pieceNameAllLang);
             }
         }
     }

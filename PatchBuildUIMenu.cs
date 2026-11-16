@@ -50,7 +50,7 @@ namespace CraftMeOnce
                 return;
             }
 
-            bool hasPieceEverBeenCrafted = GameManager.HasPieceEverBeenCrafted(pieceInfo);
+            bool hasPieceEverBeenCrafted = GameManager.HasPieceEverBeenCrafted(pieceInfo.m_name);
             Logger.Log("pieceName "+pieceName+" ever crafted? "+hasPieceEverBeenCrafted);
             hintMarkInBuildPiece.GetComponent<TextMeshProUGUI>().text = hasPieceEverBeenCrafted 
                 ? "" 
@@ -102,10 +102,10 @@ namespace CraftMeOnce
         {
             Logger.Log("TryPlacePiecePatch - Postfix");
             
-            bool hasPieceEverBeenCrafted = GameManager.HasPieceEverBeenCrafted(piece);
+            bool hasPieceEverBeenCrafted = GameManager.HasPieceEverBeenCrafted(piece.m_name);
             if (!hasPieceEverBeenCrafted)
             {
-                GameManager.SetPieceEverBeenCrafted(piece);
+                GameManager.SetPieceEverBeenCrafted(piece.m_name);
             }
         }
     }
