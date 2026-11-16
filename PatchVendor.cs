@@ -84,8 +84,6 @@ namespace CraftMeOnce
 
         private static void createVendorHintButton()
         {
-            //Transform copyButton = StoreGui.instance.transform.Find("Store/BuyButton");
-            //Transform parent = copyButton.parent.transform;
             Transform copyButton = InventoryGui.instance.m_skillsDialog.transform.Find("SkillsFrame/Closebutton");
             Transform parent = StoreGui.instance.transform.Find("Store");
             vendorHintButtonGo = Object.Instantiate(copyButton.gameObject, parent);
