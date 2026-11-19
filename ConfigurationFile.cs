@@ -46,6 +46,7 @@ namespace CraftMeOnce
         public static ConfigEntry<Vector2> hammerBtnPosition;
         public static ConfigEntry<Vector2> hammerBtnSize;
         public static ConfigEntry<string> hammerCharacterForNotObtainedItems;
+        public static ConfigEntry<string> hammerExclusions;
         
         public static ConfigFile configFile;
         private static readonly string ConfigFileName = CraftMeOnce.GUID + ".cfg";
@@ -81,6 +82,7 @@ namespace CraftMeOnce
                 hammerBtnPosition = configFile.Bind("4 - Config Hammer Menu", "Button Position", new Vector2(-519, 730), "Left corner position for the hint button (default: x=-90, y=573)");
                 hammerBtnSize = configFile.Bind("4 - Config Hammer Menu", "Button Size", new Vector2(32, 32), "Width/Height of the hint button (default: x=29, y=29)");
                 hammerCharacterForNotObtainedItems = configFile.Bind("4 - Config Hammer Menu", "Character for Not Obtained Items", "!", "Character to show the item has never been placed (default = '!')");
+                hammerExclusions = configFile.Bind("4 - Config Hammer Menu", "Excluded menus", "_HoePieceTable,_CultivatorPieceTable,_FeasterPieceTable", "Comma-separated list of exclusions to not show hint mark in build menus");
                 SetupWatcher();
             }
         }

@@ -45,7 +45,8 @@ namespace CraftMeOnce
                 Logger.Log("hintMarkInBuildPiece created for " + pieceName);
             }
 
-            if (ConfigurationFile.hammerHintMode.Value == ConfigurationFile.HintMode.Off) {
+            if (ConfigurationFile.hammerHintMode.Value == ConfigurationFile.HintMode.Off ||
+                ConfigurationFile.hammerExclusions.Value.Contains(((PieceTable)GameManager.GetPrivateValue(buildUi, "m_currentBuildTool")).name)) {
                 hintMarkInBuildPiece.GetComponent<TextMeshProUGUI>().text = "";
                 return;
             }
