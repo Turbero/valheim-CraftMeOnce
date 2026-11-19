@@ -1,5 +1,11 @@
 ### CHANGELOG
 
+## 1.2.1
+
+* Added option to hide hint mark in other build menus than the vanilla hammer if wanted. 
+  * By default, it hides the hint mark in Hoe, Cultivator and Feaster build menus (they don't count for The Carpenter achievement)
+  * If using other mod hammers you will see the hint mark, but you can add their related build menu names here if you want to hide it 
+
 ## 1.2.0
 
 Hammer update!
